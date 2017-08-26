@@ -68,3 +68,7 @@ tokenise = filter <<< split
 classifier :: Array String -> String -> String
 classifier sentences = classify stats <<< tokenise
   where stats = (getStats <<< Array.concat <<< map tokenise) sentences
+
+hasClasses :: Array String -> String -> Boolean
+hasClasses classes = f <<< tokenise
+  where f = Set.included classes <<< toSet

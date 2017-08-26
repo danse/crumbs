@@ -14,7 +14,7 @@ import Text.Smolder.Renderer.String (render)
 import Data.List.Lazy (replicate, foldl)
 import Data.List.Types (List)
 import Data.Foldable (fold, foldlDefault)
-import Autocategorise (classifier)
+import Autocategorise (classifier, hasClasses)
 import Data.Map as Map
 import Data.Maybe as Maybe
 import Data.Semigroup (class Semigroup)
@@ -91,9 +91,13 @@ type DayEnd = {
 #-}
 
 type State = {
-  entries :: Array Entry
+  entries :: Array Entry,
+  path :: Array String
   -- tagReports :: Map String Int
   }
+
+pathEntries :: State -> Array Entry
+pathEntries s = filter (hasClasses (path s)) (entries s)
 
 initialState :: { entries :: Array Entry }
 initialState = { entries: [] }

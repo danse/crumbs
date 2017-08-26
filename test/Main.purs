@@ -14,7 +14,7 @@ import Test.QuickCheck (quickCheck)
 import Data.Tuple (fst, snd, Tuple(..))
 import Data.String (length)
 import Main (crumbify, getTags, processDescription, Shaped(..), DescriptionSection(..), takeSections, dropSections)
-import Autocategorise (classifier, mostFrequent, getStats, mostFrequentTuples, Stats(..), showStats)
+import Autocategorise (classifier, mostFrequent, getStats, mostFrequentTuples, Stats(..), showStats, hasClasses)
 import Data.Maybe (Maybe(..))
 import Data.Map as Map
 import Data.Array (fold)
@@ -61,6 +61,21 @@ main = do
         Assert.equal "b" (classifier ["d", "b", "b"] "d b")
         Assert.equal "c" (classifier ["d", "b", "c", "c", "c d"] "d b c")
         Assert.equal "c" (classifier ["c b"] "c b")
+    suite "prependPath" do
+      test "works as expected" do
+        Assert.equal "a b c" (prependPath ["a", "b"] "c")
+        Assert.equal "c b a" (prependPath ["a", "b"] "c b a")
+        Assert.equal "c b a" (prependPath [] "c b a")
+    suite "cutPath" do
+      test "works as expected" do
+        Assert.equal ["a", "b"] (cutPath ["a", "b", "c"] "c")
+        Assert.equal ["a"] (cutPath ["a", "b", "c"] "b")
+        Assert.equal ["a", "b", "c"] (cutPath ["a", "b", "c"] "d")
+    suite "hasClasses" do
+      test "works as expected" do
+        Assert.equal True (hasClasses ["b", "d"] "b d")
+        Assert.equal False (hasClasses ["b", "d"] "b c")
+        Assert.equal True (hasClasses [] "")
     suite "processDescription" do
       test "category overlapping the colour boundary" do
         Assert.equal (Shaped { solid: [Plain "this", Linked "category"], grey: [] }) (processDescription ["category"] "this category" 7)
