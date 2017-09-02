@@ -12,7 +12,9 @@ You can test `fun.js` like this:
 
 I am slowly migrating at least the business logic to Purescript. There
 is a shell script to update the part of the code that is generated
-from Purescript
+from Purescript.
+
+i can build this with purescript@0.10 and pulp@10
 
 #### App Cache
 
