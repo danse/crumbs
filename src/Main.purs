@@ -248,3 +248,10 @@ getChartData s =
       toValue k = Maybe.fromMaybe 0.0 (lookupCharStats k unifiedStats)
       toData k = { label: k, value: toValue k }
   in Array.fromFoldable (map toData (keysCharStats unifiedStats))
+
+cutPath :: Array String -> String -> Array String
+cutPath path cutPoint = takeUntil (== cutPoint) path
+
+prependPath :: Array String -> String -> String
+prependPath path description = fold prepend path description
+  where prepend seg description = seg + " " + description

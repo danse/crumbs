@@ -13,7 +13,7 @@ import Control.Monad.Aff.AVar (AVAR)
 import Test.QuickCheck (quickCheck)
 import Data.Tuple (fst, snd, Tuple(..))
 import Data.String (length)
-import Main (crumbify, getTags, processDescription, Shaped(..), DescriptionSection(..), takeSections, dropSections)
+import Main (crumbify, getTags, processDescription, Shaped(..), DescriptionSection(..), takeSections, dropSections, prependPath, cutPath)
 import Autocategorise (classifier, mostFrequent, getStats, mostFrequentTuples, Stats(..), showStats, hasClasses)
 import Data.Maybe (Maybe(..))
 import Data.Map as Map
