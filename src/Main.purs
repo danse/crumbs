@@ -97,7 +97,8 @@ type State = {
   }
 
 pathEntries :: State -> Array Entry
-pathEntries s = filter (hasClasses (path s)) (entries s)
+pathEntries s = filter onPath s.entries
+  where onPath (Entry e) = hasClasses s.path e.description
 
 initialState :: { entries :: Array Entry }
 initialState = { entries: [] }
