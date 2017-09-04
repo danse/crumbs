@@ -1,7 +1,7 @@
 module Main where
 
 import Prelude
-import Data.Array (snoc, filter, reverse)
+import Data.Array (snoc, filter, reverse, takeWhile)
 import Data.Array as Array
 import Data.Time (Time)
 import Data.Int (toNumber, round)
@@ -250,8 +250,9 @@ getChartData s =
   in Array.fromFoldable (map toData (keysCharStats unifiedStats))
 
 cutPath :: Array String -> String -> Array String
-cutPath path cutPoint = takeUntil (== cutPoint) path
+cutPath path cutPoint = takeWhile isNotCutPoint path
+  where isNotCutPoint segment = segment /= cutPoint
 
 prependPath :: Array String -> String -> String
-prependPath path description = fold prepend path description
-  where prepend seg description = seg + " " + description
+prependPath path description = Array.foldr prepend description path
+  where prepend seg description = seg <> " " <> description
