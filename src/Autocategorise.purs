@@ -70,5 +70,6 @@ classifier sentences = classify stats <<< tokenise
   where stats = (getStats <<< Array.concat <<< map tokenise) sentences
 
 hasClasses :: Array String -> String -> Boolean
-hasClasses classes = f <<< tokenise
-  where f = Set.included classes <<< toSet
+hasClasses classes description = Set.subset classSet tokenSet
+  where classSet = Set.fromFoldable classes
+        tokenSet = Set.fromFoldable (tokenise description)
