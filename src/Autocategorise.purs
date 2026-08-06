@@ -4,7 +4,6 @@ import Prelude
 import Data.Set as Set
 import Data.Map as Map
 import Data.Array as Array
-import Data.List as List
 import Data.String as String
 import Data.Tuple as Tuple
 import Data.Maybe (Maybe(..), fromMaybe, isJust)
@@ -22,8 +21,8 @@ instance monoidStats :: Monoid Stats where
 getStats :: Array String -> Stats
 getStats = fold <<< map (\x -> Stats (Map.singleton x 1))
 
-showStats :: Stats -> List.List (Tuple.Tuple String (Maybe Int))
-showStats (Stats s) = map (\k -> Tuple.Tuple k (Map.lookup k s))(Map.keys s)
+showStats :: Stats -> Array (Tuple.Tuple String (Maybe Int))
+showStats (Stats s) = map (\k -> Tuple.Tuple k (Map.lookup k s))(Array.fromFoldable (Map.keys s))
 
 compareFirstJust :: Tuple.Tuple (Maybe Int) String -> Tuple.Tuple (Maybe Int) String -> Ordering
 compareFirstJust (Tuple.Tuple (Just i1) _) (Tuple.Tuple (Just i2) _) = compare i2 i1

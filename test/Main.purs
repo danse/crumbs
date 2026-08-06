@@ -4,30 +4,16 @@ import Prelude
 import Test.Unit (suite, test)
 import Test.Unit.Main (runTest)
 import Test.Unit.Assert as Assert
-import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Console (CONSOLE)
-import Control.Monad.Eff.Exception (EXCEPTION)
-import Control.Monad.Eff.Random (RANDOM)
-import Test.Unit.Console (TESTOUTPUT)
-import Control.Monad.Aff.AVar (AVAR)
+import Effect (Effect)
 import Test.QuickCheck (quickCheck)
-import Data.Tuple (fst, snd, Tuple(..))
-import Data.String (length)
+import Data.Tuple (Tuple(..))
 import Main (crumbify, getTags, processDescription, Shaped(..), DescriptionSection(..), takeSections, dropSections, intersperse)
 import Autocategorise (classifier, mostFrequent, getStats, mostFrequentTuples, Stats(..), showStats, tokenise)
 import Data.Maybe (Maybe(..))
 import Data.Map as Map
-import Data.Array (fold)
-import Data.List as List
-import Data.List ((:), List(..))
+import Data.Foldable (fold)
 
-main :: forall e. Eff (
-  console :: CONSOLE,
-  testOutput :: TESTOUTPUT,
-  avar :: AVAR,            
-  err :: EXCEPTION,
-  random :: RANDOM
-   | e) Unit                      
+main :: Effect Unit
 main = do
   quickCheck (\ x -> takeSections x [] == [])     
   runTest $ do
@@ -46,11 +32,11 @@ main = do
     suite "Stats" do
 
       test "folds as expected" do
-        Assert.equal ((Tuple "a" (Just 2)) : Nil) (showStats (fold [Stats (Map.singleton "a" 1), Stats (Map.singleton "a" 1)]))
+        Assert.equal [Tuple "a" (Just 2)] (showStats (fold [Stats (Map.singleton "a" 1), Stats (Map.singleton "a" 1)]))
       test "folds with more keys" do
-        Assert.equal ((Tuple "a" (Just 2)) : (Tuple "b" (Just 1)) : Nil) (showStats (fold [Stats (Map.singleton "a" 1), Stats (Map.singleton "a" 1), Stats (Map.singleton "b" 1)]))
+        Assert.equal [Tuple "a" (Just 2), Tuple "b" (Just 1)] (showStats (fold [Stats (Map.singleton "a" 1), Stats (Map.singleton "a" 1), Stats (Map.singleton "b" 1)]))
       test "showStats <<< getStats" do
-        Assert.equal ((Tuple "a" (Just 2)) : (Tuple "b" (Just 1)) : Nil) (showStats (getStats ["a", "a", "b"]))
+        Assert.equal [Tuple "a" (Just 2), Tuple "b" (Just 1)] (showStats (getStats ["a", "a", "b"]))
 
     suite "mostFrequentTuples <<< getStats" do
 

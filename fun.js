@@ -14,3 +14,8 @@ function hours(minutes) {
       integer = minutes - reminder;
   return [integer/60, reminder];
 }
+
+export {
+  format,
+  hours
+};

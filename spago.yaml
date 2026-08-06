@@ -1,0 +1,24 @@
+package:
+  name: crumbs
+  dependencies:
+    - arrays
+    - datetime
+    - foldable-traversable
+    - integers
+    - js-date
+    - maybe
+    - ordered-collections
+    - prelude
+    - strings
+    - stringutils
+    - tuples
+  test:
+    main: Test.Main
+    dependencies:
+      - effect
+      - quickcheck
+      - test-unit
+workspace:
+  packageSet:
+    registry: 80.3.0
+  extraPackages: {}

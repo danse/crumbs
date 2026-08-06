@@ -1,5 +1,7 @@
 // copied from http://bl.ocks.org/dbuezas/9306799
 
+import * as d3 from "d3";
+
 var svg = d3.select("#chart")
       .append("svg")
       .append("g")
@@ -52,7 +54,7 @@ d3.select(".randomize")
   });
 
 
-function change(data) {
+export function change(data) {
 
   /* ------- PIE SLICES -------*/
   var slice = svg.select(".slices").selectAll("path.slice")

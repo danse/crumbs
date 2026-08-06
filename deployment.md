@@ -1,19 +1,17 @@
-An old page with the previous version of Crumbs can be kept running,
-with the new one open in a different tab.
+The site is a set of static files: `index.html`, the bundled `app.js`,
+`style.css`, `chart.css` and `favicon.ico`. Build the bundle before
+deploying:
 
-In the `gh-pages` branch, it's necessary to commit dependencies in the
-`bower_components` dir.
+    $ npm run build
 
-Also remove `pure.js` from `.gitignore`.
-
-The manifest needs to be updated, including remote dependencies like
-libraries.
+In the `gh-pages` branch, it's necessary to commit the built `app.js`,
+so it needs to be removed from `.gitignore` there.
 
 #### What i typically do
 
-- update the version in the manifest
-- checkout to gh-page and rebase
-- build Purescript assets
+- build the bundle (`npm run build`)
+- checkout gh-pages and rebase
+- commit the built assets
 - force push
 
-When switching back to master, it is necessary to run `bower install` again
+When switching back to master, just run `npm run build` again.

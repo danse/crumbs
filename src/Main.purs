@@ -3,17 +3,11 @@ module Main where
 import Prelude
 import Data.Array (snoc, filter, reverse, head, tail)
 import Data.Array as Array
-import Data.Time (Time)
+import Data.JSDate (JSDate)
 import Data.Int (toNumber, round)
 import Data.String (split, take, drop, length, Pattern(..), joinWith)
 import Data.String.Utils (stripChars)
-import Text.Smolder.HTML as HTML
-import Text.Smolder.HTML.Attributes as Attributes
-import Text.Smolder.Markup (text, (!), MarkupM)
-import Text.Smolder.Renderer.String (render)
-import Data.List.Lazy (replicate, foldl)
-import Data.List.Types (List)
-import Data.Foldable (fold, foldlDefault)
+import Data.Foldable (fold, foldl, foldMap)
 import Autocategorise (classifier)
 import Data.Map as Map
 import Data.Maybe as Maybe
@@ -56,14 +50,14 @@ intersperse i [e] = [e]
 intersperse i l = a <> intersperse i b
   where a = Maybe.maybe [] f (head l)
         f j = [j, i]
-        b = Maybe.maybe [] id (tail l)
+        b = Maybe.fromMaybe [] (tail l)
 
 descriptionSectionLength :: DescriptionSection -> Int
 descriptionSectionLength (Plain s) = length s
 descriptionSectionLength (Linked s) = length s
 
 descriptionSectionArrayLength :: Array DescriptionSection -> Int
-descriptionSectionArrayLength = foldlDefault f 0
+descriptionSectionArrayLength = foldl f 0
   where f b a = b + descriptionSectionLength a
 
 sectionLength :: DescriptionSection -> Int
@@ -79,7 +73,7 @@ instance showShaped :: Show a => Show (Shaped a) where
   show (Shaped a) = "Shaped solid: " <> show a.solid <> " grey: " <> show a.grey
 
 newtype Entry = Entry {
-  start :: Time,
+  start :: JSDate,
   duration :: Number,
   description :: String
   }
@@ -106,7 +100,7 @@ type State = {
 initialState :: { entries :: Array Entry }
 initialState = { entries: [] }
 
-addEntry :: Number -> String -> Time -> State -> State
+addEntry :: Number -> String -> JSDate -> State -> State
 addEntry du de st state = state { entries = snoc state.entries newEntry }
   where newEntry = Entry {
           duration: du,
@@ -124,7 +118,7 @@ getDescription :: Entry -> String
 getDescription (Entry r) = r.description
 
 type Margin = {
-  time :: Time,
+  time :: JSDate,
   description :: String,
   value :: Number
   }
@@ -159,7 +153,7 @@ linkCategories categories = map toSection <<< words
           | otherwise = Plain word
 
 produceCrumbs :: Int -> DescriptionSection
-produceCrumbs i = Plain (foldl (<>) "" (replicate i "."))
+produceCrumbs i = Plain (Array.foldl (<>) "" (Array.replicate i "."))
 
 -- make sure that the description section is as long as the value
 -- associated to it. If it's not, add crumbs
@@ -194,26 +188,18 @@ processDescription categories description minutes =
       grey = dropSections minutes sections
   in Shaped { solid: crumbify minutes solid, grey: grey }
 
-markupDescriptionSection :: DescriptionSection -> MarkupM _ Unit
-markupDescriptionSection (Plain s) = HTML.span (text (s))
-markupDescriptionSection (Linked s) = (HTML.span ! Attributes.className "category") (text (s))
+markupDescriptionSection :: DescriptionSection -> String
+markupDescriptionSection (Plain s) = "<span>" <> s <> "</span> "
+markupDescriptionSection (Linked s) = "<span class=\"category\">" <> s <> "</span> "
 
--- I'm looking for a function Monad m, Foldable f => f m -> m
-foldHTML :: Array (HTML.Html _) -> (HTML.Html _)
-foldHTML = fold
-
-markupDescriptionSections :: Array DescriptionSection -> MarkupM _ Unit
-markupDescriptionSections = foldHTML <<< map render
-  where render s = do
-          markupDescriptionSection s
-          text " "
+markupDescriptionSections :: Array DescriptionSection -> String
+markupDescriptionSections = foldMap markupDescriptionSection
 
 renderEntry :: (String -> String) -> Entry -> String
-renderEntry classify (Entry entry) = render $ do
-  HTML.br
-  (HTML.span ! Attributes.className "time") (text (show dur))
-  markupDescriptionSections processed.solid
-  (HTML.span ! Attributes.className "extra") (markupDescriptionSections processed.grey)
+renderEntry classify (Entry entry) =
+  "<br><span class=\"time\">" <> show dur <> "</span>"
+    <> markupDescriptionSections processed.solid
+    <> "<span class=\"extra\">" <> markupDescriptionSections processed.grey <> "</span>"
   where dur = round entry.duration
         des = entry.description
         cat = classify des
@@ -225,8 +211,7 @@ renderEntries s = joinWith " " $ reverse $ map (renderEntry classify) s.entries
 
 renderFolder :: String -> String -> String
 renderFolder base "" = renderFolder base "default"
-renderFolder base folder = render $ do
-  (HTML.a ! Attributes.href (base <> "?" <> folder)) (text folder)
+renderFolder base folder = "<a href=\"" <> base <> "?" <> folder <> "\">" <> folder <> "</a>"
 
 type ChartData = { label :: String, value :: Number }
 
@@ -238,7 +223,7 @@ instance monoidChartStats :: Monoid ChartStats where
   mempty = ChartStats (Map.empty)
 
 lookupCharStats k (ChartStats c) = Map.lookup k c
-keysCharStats (ChartStats c) = Map.keys c
+keysCharStats (ChartStats c) = Array.fromFoldable (Map.keys c)
 
 getChartData :: State -> Array ChartData
 getChartData s =

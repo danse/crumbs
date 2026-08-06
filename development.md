@@ -1,22 +1,24 @@
-#### Doctests
+#### Test
 
-The code in `fun.js` is doctested. This means that the comments are
-also actual tests. [Doctest](https://github.com/davidchambers/doctest)
-is pretty cool, check it out!
+Run `npm test`. This runs the doctests in `fun.js` and the PureScript
+test suite (spago test).
 
-You can test `fun.js` like this:
+#### Build
 
-    $ ./node_modules/.bin/doctest fun.js 
+The JavaScript and PureScript code is bundled into a single file,
+`app.js`:
+
+    $ npm run build
+
+PureScript sources in `src/` are compiled with spago into `output/`, then
+`index.js`, `chart.js`, `fun.js` and the npm packages `jquery` and `d3`
+are bundled together with esbuild.
 
 #### Purescript
 
-I am slowly migrating at least the business logic to Purescript. There
-is a shell script to update the part of the code that is generated
-from Purescript
-
-#### App Cache
-
-The manifest here is still maintained manually
+The business logic in `src/*.purs` is compiled with the modern PureScript
+toolchain (PureScript 0.15 and spago). Dependencies are declared in
+`spago.yaml`.
 
 #### Deployment
 

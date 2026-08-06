@@ -3,12 +3,15 @@
   "description": "minimalist time tracking tool",
   "version": "0.0.0",
   "main": "index.js",
-  "dependencies": {},
   "devDependencies": {
-    "doctest": "^0.7.1"
+    "doctest": "^0.21.0",
+    "esbuild": "^0.28.1",
+    "purescript": "^0.15.15",
+    "spago": "^1.0.4"
   },
   "scripts": {
-    "test": "./node_modules/.bin/doctest fun.js"
+    "build": "spago build && esbuild index.js --bundle --outfile=app.js",
+    "test": "doctest --module esm fun.js && spago test"
   },
   "repository": {
     "type": "git",
@@ -19,5 +22,13 @@
   "bugs": {
     "url": "https://github.com/danse/crumbs/issues"
   },
-  "homepage": "https://github.com/danse/crumbs"
+  "homepage": "https://github.com/danse/crumbs",
+  "allowScripts": {
+    "esbuild@0.28.1": true,
+    "purescript@0.15.15": true
+  },
+  "dependencies": {
+    "d3": "^3.5.17",
+    "jquery": "^4.0.0"
+  }
 }

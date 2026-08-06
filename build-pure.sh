@@ -1,1 +1,1 @@
-pulp build --optimise --skip-entry-point --to pure.js
+spago build && esbuild index.js --bundle --outfile=app.js

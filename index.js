@@ -1,13 +1,17 @@
 /*
-
+ 
  `refresh` is the main rendering function, called in the handler of
  many events. It clears the document, then goes through the state and
  renders it again.
-
+ 
  The state and a few methods associated with it are in `burrito`
-
+ 
  */
-var Main = PS["Main"] // let's make this easier to use
+import $ from "jquery";
+import * as Main from "./output/Main/index.js"; // let's make this easier to use
+import { format } from "./fun.js";
+import { change } from "./chart.js";
+
 var minute = 60000;
 var before = Date.now();
 
@@ -117,7 +121,7 @@ var burrito = {
   }
 };
 
-onload = function() {
+window.onload = function() {
   getInput().keyup(function(e) {
     if(e.which===13) {
       var $i = getInput();
@@ -160,7 +164,7 @@ onload = function() {
     $('.prompt').text(r.counter).toggle();
   });
 };
-onpageshow = function() {
+window.onpageshow = function() {
   getInput().focus();
 }
 
