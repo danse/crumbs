@@ -4,4 +4,3 @@
 /.psci*
 /src/.webpack.js
 pure.js
-app.js
