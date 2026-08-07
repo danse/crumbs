@@ -55,6 +55,8 @@ a, a:visited {
 }
 input {
     font-family: 'Ubuntu Mono', sans-serif;
+    border-style: hidden;
+    border-radius: 20%;
 /*
         font-family: 'Cutive Mono', serif;
         font-family: 'Nova Mono', cursive;
